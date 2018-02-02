@@ -1,9 +1,17 @@
 <template>
   <v-app>
     <v-toolbar>
-      <v-toolbar-side-icon light @click.native.stop="sideNav = !sideNav"></v-toolbar-side-icon>
+      <v-toolbar-side-icon 
+      @click.stop="sideNav = !sideNav"></v-toolbar-side-icon>
     </v-toolbar>
-    <v-navigation-drawer temporary v-model="sideNav">
+    <main>
+      <v-container>
+        <v-layout row wrap>
+          <v-flex xs12>Tes</v-flex>
+        </v-layout>
+      </v-container>
+    </main>
+    <v-navigation-drawer absolute temporary v-model="sideNav">
       <v-list>
         <v-list-tile>
           <v-list-tile-action>
@@ -15,13 +23,6 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <main>
-      <v-container>
-        <v-layout row wrap>
-          <v-flex xs12>Tes</v-flex>
-        </v-layout>
-      </v-container>
-    </main>
   </v-app>
 </template>
 
