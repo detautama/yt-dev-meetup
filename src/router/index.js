@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
 import Meetups from '@/components/Meetup/Meetups'
+import Meetup from '@/components/Meetup/Meetup'
 import CreateMeetup from '@/components/Meetup/CreateMeetup'
 import Profile from '@/components/User/Profile'
 import Signup from '@/components/User/Signup'
@@ -22,7 +23,12 @@ export default new Router({
       component: Meetups
     },
     {
-      path: '/meetup/new',
+      path: '/meetup/:id',
+      name: 'Meetup',
+      component: Meetup
+    },
+    {
+      path: '/new',
       name: 'CreateMeetup',
       component: CreateMeetup
     },

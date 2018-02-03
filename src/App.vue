@@ -45,7 +45,7 @@
         sideNav: false,
         menuItems: [
           { icon: 'supervisor_account', title: 'View Meetups', link: '/meetups' },
-          { icon: 'room', title: 'Organize Meetups', link: '/meetup/new' },
+          { icon: 'room', title: 'Organize Meetups', link: '/new' },
           { icon: 'person', title: 'profile', link: '/profile' },
           { icon: 'face', title: 'Sign Up', link: '/signup' },
           { icon: 'lock_open', title: 'Sign In', link: '/signin' }

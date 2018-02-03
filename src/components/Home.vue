@@ -5,16 +5,17 @@
         <v-btn large to="/meetups" class="info">Explore Meetups</v-btn>
       </v-flex>
       <v-flex xs12 sm6 class="text-xs-center text-sm-left">
-        <v-btn large to="/meetup/new" class="info">Organize Meetup</v-btn>
+        <v-btn large to="/new" class="info">Organize Meetup</v-btn>
       </v-flex>
     </v-layout>
     <v-layout row wrap class="mt-2">
       <v-flex xs12>
-        <v-carousel>
+        <v-carousel style="cursor:pointer;">
           <v-carousel-item
           v-for="meetup in meetups"
           :src="meetup.imageUrl"
-          :key="meetup.id">
+          :key="meetup.id"
+          @click="onLoadMeetup(meetup.id)">
             <div class="title">
               {{meetup.title}}
             </div>
@@ -33,6 +34,11 @@ export default {
         { imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/47/New_york_times_square-terabass.jpg', id: 'afajfjadfaadfa323', title: 'Meetup in New York' },
         { imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/7a/Paris_-_Blick_vom_gro%C3%9Fen_Triumphbogen.jpg', id: 'aadsfhbkhlk1241', title: 'Meetup in Paris' }
       ]
+    }
+  },
+  methods: {
+    onLoadMeetup (id) {
+      this.$router.push('/meetup/' + id)
     }
   }
 }
