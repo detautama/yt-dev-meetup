@@ -10,13 +10,17 @@ export const store = new Vuex.Store({
         imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/47/New_york_times_square-terabass.jpg',
         id: 'afajfjadfaadfa323',
         title: 'Meetup in New York',
-        date: '2017-07-17'
+        date: '2017-07-17',
+        desc: 'this is the best description ever',
+        time: '10:00am'
       },
       {
         imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/7a/Paris_-_Blick_vom_gro%C3%9Fen_Triumphbogen.jpg',
         id: 'aadsfhbkhlk1241',
         title: 'Meetup in Paris',
-        date: '2017-07-19'
+        date: '2017-07-19',
+        desc: 'this is the best description ever',
+        time: '10:00am'
       }
     ],
     user: {
@@ -32,11 +36,12 @@ export const store = new Vuex.Store({
   actions: {
     createMeetup ({commit}, payload) {
       const meetup = {
-        title: this.title,
-        location: this.location,
-        imageUrl: this.imageUrl,
-        desc: this.desc,
-        date: this.date,
+        title: payload.title,
+        location: payload.location,
+        imageUrl: payload.imageUrl,
+        desc: payload.desc,
+        date: payload.date,
+        time: payload.time,
         id: 'qweqe11e'
       }
       // Reach out to firebase ad store it

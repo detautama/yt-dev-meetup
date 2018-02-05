@@ -34,6 +34,54 @@
             </v-flex>
           </v-layout>
           <v-layout>
+             <v-flex xs12 sm6 offset-sm3>
+              <v-menu
+                lazy
+                :close-on-content-click="false"
+                v-model="menu"
+                transition="scale-transition"
+                offset-y
+                full-width
+                :nudge-right="40"
+                max-width="290px"
+                min-width="290px"
+              >
+                <v-text-field
+                  slot="activator"
+                  label="Picker in menu"
+                  v-model="date"
+                  prepend-icon="event"
+                  readonly
+                  required
+                ></v-text-field>
+                <v-date-picker v-model="date" autosave></v-date-picker>
+              </v-menu>
+            </v-flex>
+          </v-layout>
+          <v-layout row wrap>
+            <v-flex xs12 sm6 offset-sm3>
+              <v-menu
+              lazy
+              :close-on-content-click="false"
+              v-model="time_menu"
+              transition="scale-transition"
+              offset-y
+              full-width
+              :nudge-right="40"
+              max-width="290px"
+              min-width="290px">
+                <v-text-field
+                slot="activator"
+                label="Time"
+                prepend-icon="access_time"
+                readonly
+                v-model="time">
+                </v-text-field>
+                <v-time-picker v-model="time" autosave></v-time-picker>
+              </v-menu>
+            </v-flex>
+          </v-layout>
+          <v-layout>
             <v-flex xs12 sm6 offset-sm3>
               <v-btn type="submit">
                 Create Meetup
@@ -52,7 +100,11 @@
         title: '',
         location: '',
         imageUrl: '',
-        desc: ''
+        desc: '',
+        date: '',
+        time: '',
+        menu: false,
+        time_menu: false
       }
     },
     computed: {
@@ -60,7 +112,9 @@
         return this.title !== '' &&
           this.location !== '' &&
           this.imageUrl !== '' &&
-          this.desc !== ''
+          this.desc !== '' &&
+          this.date !== '' &&
+          this.time !== ''
       }
     },
     methods: {
@@ -73,7 +127,8 @@
           location: this.location,
           imageUrl: this.imageUrl,
           desc: this.desc,
-          date: new Date()
+          date: this.date,
+          time: this.time
         }
         this.$store.dispatch('createMeetup', meetupData)
         this.$router.push('/meetups')
