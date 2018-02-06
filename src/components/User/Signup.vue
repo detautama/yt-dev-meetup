@@ -1,5 +1,10 @@
 <template>
   <v-container>
+    <v-layout row v-if="error">
+      <v-flex xs12 sm6 offset-sm3>
+        <app-alert @dissmissed="onDissmissed" :text="error.message"></app-alert>
+      </v-flex>
+    </v-layout>
     <v-layout row>
       <v-flex xs12 sm6 offset-sm3>
         <v-card>
@@ -32,14 +37,13 @@
                     name="confirmPassword"
                     label="Confirm Password"
                     v-model="confirmPassword"
-                    type="password"
-                    :rules="[comparePassword]"
-                    required></v-text-field>
+                    type="password"></v-text-field>
+                    <div v-if="comparePassword == true" class="red--text">Password do not match</div>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
                   <v-flex xs12>
-                    <v-btn type="submit">Sign Up</v-btn>
+                    <v-btn type="submit" :disabled="comparePassword">Sign Up</v-btn>
                   </v-flex>
                 </v-layout>
               </form>
@@ -62,10 +66,13 @@ export default {
   },
   computed: {
     comparePassword () {
-      return this.password !== this.confirmPassword ? 'Password do not match' : ''
+      return this.password !== this.confirmPassword
     },
     user () {
       return this.$store.getters.user
+    },
+    error () {
+      return this.$store.getters.error
     }
   },
   watch: {
@@ -78,6 +85,9 @@ export default {
   methods: {
     onSignUserUp () {
       this.$store.dispatch('signUserUp', {email: this.email, password: this.password})
+    },
+    onDissmissed () {
+      this.$store.dispatch('clearError')
     }
   }
 }

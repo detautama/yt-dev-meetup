@@ -26,7 +26,8 @@ export const store = new Vuex.Store({
         time: '10:00am'
       }
     ],
-    user: null
+    user: null,
+    error: null
   },
   // MUTATIONS======================
   // =================================
@@ -36,6 +37,12 @@ export const store = new Vuex.Store({
     },
     setUser (state, payload) {
       state.user = payload
+    },
+    setError (state, payload) {
+      state.error = payload
+    },
+    clearError (state) {
+      state.error = null
     }
   },
   // ACTIONS==========================
@@ -55,6 +62,7 @@ export const store = new Vuex.Store({
       commit('createMeetup', meetup)
     },
     signUserUp ({commit}, payload) {
+      commit('clearError')
       firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
         .then(
           user => {
@@ -67,11 +75,13 @@ export const store = new Vuex.Store({
         )
         .catch(
           error => {
+            commit('setError', error)
             console.log(error)
           }
         )
     },
     signUserIn ({commit}, payload) {
+      commit('clearError')
       firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
         .then(
           user => {
@@ -84,9 +94,13 @@ export const store = new Vuex.Store({
         )
         .catch(
           error => {
+            commit('setError', error)
             console.log(error)
           }
         )
+    },
+    clearError ({commit}) {
+      commit('clearError')
     }
   },
   // GETTERS=============================
@@ -109,6 +123,9 @@ export const store = new Vuex.Store({
     },
     user (state) {
       return state.user
+    },
+    error (state) {
+      return state.error
     }
   }
 })
