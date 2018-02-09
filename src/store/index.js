@@ -8,35 +8,25 @@ export const store = new Vuex.Store({
   // STATE=========================
   // =======================================
   state: {
-    loadedMeetups: [
-      {
-        imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/47/New_york_times_square-terabass.jpg',
-        id: 'afajfjadfaadfa323',
-        title: 'Meetup in New York',
-        date: '2017-07-17',
-        desc: 'this is the best description ever',
-        time: '10:00am'
-      },
-      {
-        imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/7a/Paris_-_Blick_vom_gro%C3%9Fen_Triumphbogen.jpg',
-        id: 'aadsfhbkhlk1241',
-        title: 'Meetup in Paris',
-        date: '2017-07-19',
-        desc: 'this is the best description ever',
-        time: '10:00am'
-      }
-    ],
+    loadedMeetups: [],
     user: null,
+    loading: false,
     error: null
   },
   // MUTATIONS======================
   // =================================
   mutations: {
+    setLoadedMeetups (state, payload) {
+      state.loadedMeetups = payload
+    },
     createMeetup (state, payload) {
       state.loadedMeetups.push(payload)
     },
     setUser (state, payload) {
       state.user = payload
+    },
+    setLoading (state, payload) {
+      state.loading = payload
     },
     setError (state, payload) {
       state.error = payload
@@ -48,7 +38,31 @@ export const store = new Vuex.Store({
   // ACTIONS==========================
   // =======================================
   actions: {
-    createMeetup ({commit}, payload) {
+    loadMeetups ({commit}) {
+      commit('setLoading', true)
+      firebase.database().ref('meetups').once('value')
+        .then((data) => {
+          const meetups = []
+          const obj = data.val()
+          for (let key in obj) {
+            meetups.push({
+              id: key,
+              title: obj[key].title,
+              desc: obj[key].desc,
+              imageUrl: obj[key].imageUrl,
+              date: obj[key].date,
+              creatorId: obj[key].creatorId
+            })
+          }
+          commit('setLoadedMeetups', meetups)
+          commit('setLoading', false)
+        })
+        .catch((error) => {
+          console.log(error)
+          commit('setLoading', false)
+        })
+    },
+    createMeetup ({commit, getters}, payload) {
       const meetup = {
         title: payload.title,
         location: payload.location,
@@ -56,10 +70,21 @@ export const store = new Vuex.Store({
         desc: payload.desc,
         date: payload.date,
         time: payload.time,
-        id: 'qweqe11e'
+        creatorId: getters.user.id
       }
+      firebase.database().ref('meetups').push(meetup)
+        .then((data) => {
+          const key = data.key
+          commit('createMeetup', {
+            ...meetup,
+            id: key
+          })
+        })
+        .catch((error) => {
+          console.log(error)
+        })
       // Reach out to firebase ad store it
-      commit('createMeetup', meetup)
+      // commit('createMeetup', meetup)
     },
     signUserUp ({commit}, payload) {
       commit('clearError')
@@ -101,6 +126,13 @@ export const store = new Vuex.Store({
     },
     clearError ({commit}) {
       commit('clearError')
+    },
+    logout ({commit}) {
+      firebase.auth().signOut()
+      commit('setUser', null)
+    },
+    autoSignIn ({commit}, payload) {
+      commit('setUser', {id: payload.uid, registeredMeetups: []})
     }
   },
   // GETTERS=============================
@@ -114,7 +146,7 @@ export const store = new Vuex.Store({
     featuredMeetups (getters) {
       return getters.loadedMeetups.slice(0, 5)
     },
-    loadedMeetup (state) {
+    onLoadedMeetup (state) {
       return (meetupId) => {
         return state.loadedMeetups.find((meetup) => {
           return meetup.id === meetupId
