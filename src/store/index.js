@@ -66,19 +66,34 @@ export const store = new Vuex.Store({
       const meetup = {
         title: payload.title,
         location: payload.location,
-        imageUrl: payload.imageUrl,
         desc: payload.desc,
         date: payload.date,
         time: payload.time,
         creatorId: getters.user.id
       }
+      let imageUrl
+      let key
       firebase.database().ref('meetups').push(meetup)
         .then((data) => {
-          const key = data.key
+          key = data.key
+          return key
+        })
+        .then(key => {
+          const filename = payload.image.name
+          const ext = filename.slice(filename.lastIndexOf('.'))
+          return firebase.storage().ref('meetups/' + key + '.' + ext).put(payload.image)
+        })
+        .then(fileData => {
+          imageUrl = fileData.metadata.downloadURLs[0]
+          return firebase.database().ref('meetups').child(key).update({imageUrl: imageUrl})
+        })
+        .then(fileData => {
           commit('createMeetup', {
             ...meetup,
+            imageUrl: imageUrl,
             id: key
           })
+          alert('Create Meetup Success')
         })
         .catch((error) => {
           console.log(error)
